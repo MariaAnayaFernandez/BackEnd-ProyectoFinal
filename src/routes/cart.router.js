@@ -1,25 +1,26 @@
 import { Router } from "express";
 import CartManager from "../manager/cart.manager.js";
+import { __dirname } from "../utils.js";
 
 const router = Router()
-const cartManager = new CartManager('../public/cart.json')
+const cartManager = new CartManager(__dirname+'/public/carts.json')
 
 //Ruta raíz POST
 router.post('/',async (req, res)=>{
     const obj = req.body
     const newCart = await cartManager.addCart(obj)
-    res.json({newCart})
+    res.json({message:'Product added to Cart', product: newCart})
 })
 
 //Ruta GET/:cid
 router.get('/:cid', async (req, res) => {
     try {
-        const { pid } = req.params;
+        const { cid } = req.params;
 
-        const product = await cartManager.getCartById(parseInt(pid));
+        const cart = await cartManager.getCartById(parseInt(cid));
 
-        if (product) {
-            res.json(product);
+        if (cart) {
+            res.json(cart);
         } else {
             res.status(404).json({ error: 'Not Found' });
         }
@@ -28,5 +29,13 @@ router.get('/:cid', async (req, res) => {
         res.status(500).json({ error: 'Error' });
     }
 });
+
+//Ruta POST/:cid
+
+router.post('/:cid/product/:pid', async(req,res)=>{
+    const {cid, pid} = req.params
+    const addProduct = await cartManager.addProductToCart(parseInt(cid), parseInt(pid))
+    res.json({message:addProduct})
+})
 
 export default router;
