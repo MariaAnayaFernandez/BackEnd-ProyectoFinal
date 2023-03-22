@@ -47,7 +47,7 @@ router.get('/:pid', async (req, res) => {
 router.post('/',async (req, res)=>{
     const obj = req.body
     const newProduct = await productManager.addProducts(obj)
-    res.json({message:'Product added', product: newProduct})
+    res.json({product: newProduct})
 })
 
 //Ruta raíz PUT/:pid

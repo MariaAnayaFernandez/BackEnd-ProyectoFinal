@@ -10,7 +10,8 @@ export default class ProductManager {
 
    //Método getProducts  
    getProducts = async () =>{
-    if (existsSync(this.path)){
+    try{
+      if (existsSync(this.path)){
         const productsList= await promises.readFile(this.path,'utf-8')
         const productos = JSON.parse(productsList)
         return (productos)
@@ -18,40 +19,63 @@ export default class ProductManager {
     console.log('Archivo creado')
     return []
     }
-   }
+  }
+  catch (err) {
+    console.error(err);
+  }}
 
 
-   //Método addProductos
+   //Método addProducts
    addProducts = async (product) => {
-    const productos = await this.getProducts()
-    let id
-    if (productos.length === 0 ){
-        id = 1
-    } else {
-        id = productos[productos.length - 1].id + 1
-    }
-    const newProducts = {id, ... product}
-    productos.push(newProducts)
-    await promises.writeFile(this.path, JSON.stringify(productos))
-    return newProducts
-   }
-
-
-      //Método getProductoById
-      getProductById= async (id) => {
+    try{
         const productos = await this.getProducts()
-        const foundProduct = productos.find(p => p.id === id)
-        if (foundProduct){
-            return foundProduct
+        let id
+        if(productos.length === 0 ){
+            id = 1
         } else {
-            return 'Not found'
+            id = productos[productos.length - 1].id + 1
         }
-  
-      }
+        const newProducts = {id, ...product}
+      
+        //Validación de campos obligatorios
+        if (Object.keys(newProducts).length < 8){
+          return 'se requieren todos los campos'
+        }
+        //Validación de código repetido
+          else if (productos.find(p => p.code == newProducts.code))
+          {
+          return 'Código repetido, ingrese código nuevo'
+          }
+        
+        else{
+          productos.push(newProducts)}
+        await promises.writeFile(this.path, JSON.stringify(productos))
+        return newProducts,'Product added'
+    } 
+  catch (err) {
+    console.error(err);
+  }}
 
-       //Método updateProduct
-   
-       updateProduct = async (id, obj) => {
+
+    //Método getProductoById
+    getProductById= async (id) => {
+      try{
+          const productos = await this.getProducts()
+          const foundProduct = productos.find(p => p.id === id)
+          if (foundProduct){
+              return foundProduct
+          } else {
+              return 'Not found'
+          }
+        }
+
+      catch (err) {
+      console.error(err);
+    }}
+
+    //Método updateProduct
+    updateProduct = async (id, obj) => {
+      try{
         const products = await this.getProducts()
         const foundProduct = products.find(p => p.id === id)
         if (!foundProduct){
@@ -62,13 +86,17 @@ export default class ProductManager {
           products.splice(productIndex, 1, update)
           await promises.writeFile(this.path, JSON.stringify(products)) 
           return 'Product updated'
-        }
-       }
+        }}
+
+        catch (err) {
+          console.error(err);
+        }}
    
    
        //Método deleteProductbyId
 
       deleteProduct = async (pid) => {
+        try{
         const products = await this.getProducts()
         const productIndex  = products.findIndex((p) => p.id === pid)
         if (productIndex  === -1){
@@ -77,8 +105,11 @@ export default class ProductManager {
           products.splice(productIndex,1)
           await promises.writeFile(this.path, JSON.stringify(products))
           return 'Product deleted'
-        }
-        }
+        }}
+
+        catch (err) {
+          console.error(err);
+        }}
 
 }
 
