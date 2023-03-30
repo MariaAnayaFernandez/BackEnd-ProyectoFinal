@@ -1,7 +1,6 @@
 <h2>Real Time Products</h2>
-<script src="/socket.io/socket.io.js"></script>
-<script src='/js/index.js'></script>
 
+<h5>Add Products</h5>
 <from id="inputProduct">
     <li>Title: <input type="text" name="title" id="title"></li>
     <li>Description: <input type="text" name="description" id="description"></li>
@@ -10,5 +9,29 @@
     <li>Satutus: <input type="text" name="status" id="status"></li>
     <li>Stock: <input type="text" name="stock" id="stock"></li>
     <li>Thumbnail: <input type="text" name="thumbnail" id="thumbnail"></li>
-    <input type="submit" value="Enviar">
+    <input type="submit" value="Submit" id="enviar">
 </from>
+
+<th></th>
+
+<h5>Delete Products</h5>
+
+<ul id="deleteTable">
+{{#each product}}
+    <li>Id:{{id}}</li>
+    <li>Title:{{title}}</li>
+    <li>Description:{{description}}</li>
+    <li>Code: {{code}}</li>
+    <li>Price: ${{price}}</li>
+    <li>Satutus:{{status}}</li>
+    <li>Stock: {{stock}}</li>
+    <li>Thumbnail: {{thumbnail}}</li>
+    <button type="submit" class="classDeleteProduct" data-id="{{id}}">Delete</button>
+    <br>
+    <br>
+{{/each}}
+</ul>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src='/js/index.js'></script>

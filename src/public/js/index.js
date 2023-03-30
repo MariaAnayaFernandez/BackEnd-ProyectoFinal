@@ -3,6 +3,7 @@
 const socketClient = io();
 
 const inputProduct = document.getElementById('inputProduct')
+const inputSubmit = document.getElementById ('enviar')
 
 const inputTitle = document.getElementById("title");
 const inputDescription = document.getElementById("description");
@@ -12,8 +13,7 @@ const inputStatus = document.getElementById("status");
 const inputStock = document.getElementById("stock");
 const inputThumbnail = document.getElementById("thumbnail");
 
-inputProduct.onsubmit = (event) =>{
-    event.preventDefault()
+inputSubmit.addEventListener("click", (e) =>{
     const newProduct={
         title: inputTitle.value,
 		description: inputDescription.value,
@@ -23,8 +23,36 @@ inputProduct.onsubmit = (event) =>{
         stock:parseInt(inputStock.value),
         thumbnail: inputThumbnail.value
     }
-    socketClient.emit('inputNewProduct', newProduct)
-}
 
-      
+    if (
+        !newProduct.title ||
+		!newProduct.description ||
+        !newProduct.code ||
+		!newProduct.price ||
+		!newProduct.status ||
+		!newProduct.stock ||
+		!newProduct.thumbnail
+    ){
+        e.preventDefault()
+        alert('Missing data')
+
+    } else {
+        socketClient.emit('newProduct', newProduct)
+
+    }
+    
+})
+
+
+const deleteProduct = document.getElementById("deleteTable");
+
+deleteProduct.addEventListener("click", (e) => {
+	e.preventDefault();
+	const element = e.target;
+	const productId = element.getAttribute("data-id");
+	if (element.className === "classDeleteProduct") {
+		socketClient.emit("deleteProduct", parseInt(productId));
+		document.location.reload()
+	}
+});    
 

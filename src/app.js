@@ -37,11 +37,20 @@ const httpServer = app.listen(8080,()=>{
 const socketServer = new Server(httpServer)
 
 socketServer.on('connection', (socket) =>{
-    console.log('Cliente conectado')
+    console.log('Client conected')
 
-    socket.on('inputNewProduct', newProduct =>{
-        productManager.addProducts({ ...newProduct });
+    socket.on('disconnect', () => {
+        console.log('Client disconnected')
+    })
+
+    socket.on('newProduct', (newProduct) =>{
+        productManager.addProducts({ ...newProduct })
         console.log('Product added', newProduct)
     })
-})
 
+    socket.on('deleteProduct', (productId) => {
+		productManager.deleteProduct(productId)
+        console.log('Product deleted')
+	})
+
+})

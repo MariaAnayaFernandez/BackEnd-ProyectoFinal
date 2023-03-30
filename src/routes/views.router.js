@@ -12,7 +12,8 @@ router.get('/', (req, res)=>{
 })
 
 router.get('/realTimeProducts', (req, res)=>{
-    res.render('realTimeProducts')
+    const product = products
+    res.render('realTimeProducts',{product})
 })
 
 export default router;
